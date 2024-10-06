@@ -25,6 +25,14 @@ var screen_size : Vector2i
 var ground_height : int
 var game_running : bool
 var last_obs
+var jump_pressed : bool = false
+
+func _input(event):
+	if event is InputEventScreenTouch:
+		if event.is_pressed():
+			jump_pressed = true
+
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -85,8 +93,9 @@ func _process(delta):
 			if obs.position.x < ($Camera2D.position.x - screen_size.x):
 				remove_obs(obs)
 	else:
-		if Input.is_action_pressed("ui_accept"):
+		if Input.is_action_pressed("ui_accept") or jump_pressed:
 			game_running = true
+			jump_pressed = false
 			$HUD.get_node("StartLabel").hide()
 
 func generate_obs():
