@@ -7,20 +7,20 @@ var barrel_scene = preload("res://scenes/barrel.tscn")
 var bird_scene = preload("res://scenes/bird.tscn")
 var obstacle_types := [stump_scene, rock_scene, barrel_scene]
 var obstacles : Array
-var bird_heights := [200, 390]
+var bird_heights := [250, 300, 350, 390]
 
 #game variables
 const DINO_START_POS := Vector2i(150, 485)
 const CAM_START_POS := Vector2i(576, 324)
 var difficulty
-const MAX_DIFFICULTY : int = 2
+const MAX_DIFFICULTY : int = 5
 var score : int
 const SCORE_MODIFIER : int = 10
 var high_score : int
 var speed : float
 const START_SPEED : float = 10.0
 const MAX_SPEED : int = 25
-const SPEED_MODIFIER : int = 5000
+const SPEED_MODIFIER : int = 2500
 var screen_size : Vector2i
 var ground_height : int
 var game_running : bool
@@ -32,11 +32,9 @@ func _input(event):
 		if event.is_pressed():
 			jump_pressed = true
 
-
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	screen_size = get_window().size
+	screen_size = get_viewport().get_visible_rect().size
 	ground_height = $Ground.get_node("Sprite2D").texture.get_height()
 	$GameOver.get_node("Button").pressed.connect(new_game)
 	new_game()
@@ -48,7 +46,7 @@ func new_game():
 	game_running = false
 	get_tree().paused = false
 	difficulty = 0
-	
+
 	#delete all obstacles
 	for obs in obstacles:
 		obs.queue_free()
@@ -85,6 +83,8 @@ func _process(delta):
 		show_score()
 		
 		#update ground position
+		print("Ground position: ", $Ground.position.x)
+		print("Camera position: ", $Camera2D.position.x)
 		if $Camera2D.position.x - $Ground.position.x > screen_size.x * 1.5:
 			$Ground.position.x += screen_size.x
 			
